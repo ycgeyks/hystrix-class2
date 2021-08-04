@@ -16,15 +16,17 @@ public class CloseMain {
 						"hystrix.command.default.circuitBreaker.requestVolumeThreshold",
 						3);
 		boolean isTimeout = true;
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i < 20; i++) {
 			TestCommand c = new TestCommand(isTimeout);
 			c.execute();
 			HealthCounts hc = c.getMetrics().getHealthCounts();
 			System.out.println("断路器状态：" + c.isCircuitBreakerOpen() + ", 请求数量：" + hc.getTotalRequests());
 			if(c.isCircuitBreakerOpen()) {
-				isTimeout = false;
 				System.out.println("============  断路器打开了，等待休眠期结束");
-				Thread.sleep(6000);
+				Thread.sleep(1000);
+				if(i>7) {
+					isTimeout = false;
+				}
 			}
 		}
 	}
